@@ -1,4 +1,4 @@
-package sample.web.ui.config;
+package sample.web.ui;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -19,6 +19,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         http
         .authorizeRequests()
             .antMatchers("/", "/home").permitAll()
+            //.antMatchers("/message", "/message").permitAll()
             .antMatchers("/orders/create-catalog").hasRole(ADMIN)
             .anyRequest().authenticated()
             .and()

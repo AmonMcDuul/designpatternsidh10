@@ -60,7 +60,7 @@ public class MessageController  {
 	}
 
 	@Transactional
-	@GetMapping(params = "form")
+	@GetMapping("form")
 	public String createForm(@ModelAttribute Message message) {
 		return FORM_TEMPLATE;
 	}
@@ -71,9 +71,10 @@ public class MessageController  {
 		if (result.hasErrors()) {
 			return new ModelAndView(FORM_TEMPLATE, "formErrors", result.getAllErrors());
 		}
-		message = this.messageRepository.save(message);
+		this.messageRepository.save(message);
 		redirect.addFlashAttribute("globalMessage", "view.success");
-		return new ModelAndView("redirect:/{message.id}", "message.id", message.getId());
+		Iterable<Message> messages = this.messageRepository.findAll();
+		return new ModelAndView(LIST_TEMPLATE, "messages", messages);
 	}
 
 	@RequestMapping("foo")
@@ -89,7 +90,9 @@ public class MessageController  {
 		return new ModelAndView(LIST_TEMPLATE, "messages", messages);
 	}
 
-	@GetMapping("modify/{id}")
+	@Transactional
+	//@PutMapping("modify/{id}")
+	@RequestMapping(value = "modify/{id}", method = {RequestMethod.GET, RequestMethod.POST})
 	public ModelAndView modifyForm(@PathVariable("id") Message message) {
 		return new ModelAndView(FORM_TEMPLATE, "message", message);
 	}

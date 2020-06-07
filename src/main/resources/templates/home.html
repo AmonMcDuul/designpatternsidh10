@@ -14,7 +14,8 @@
     <p>Greetings anonymous!</p>
     <p>To use this service please <a th:href="@{/login}">login!</a></p>
 </div>
-
+<div class="float-right mt-2">
+    <a class="btn btn-primary btn-sm" href="/message/?list.html" th:href="@{/message}" th:text="#{view.messages}">Messages</a>
 <p>Click <a th:href="@{/hello}">here</a> to see a greeting.</p>
 </body>
 </html>

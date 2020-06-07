@@ -4,10 +4,12 @@ import javax.persistence.Entity;
 
 import lombok.Getter;
 import lombok.Setter;
+import lombok.extern.slf4j.Slf4j;
 
 @Entity
 @Getter
 @Setter
+@Slf4j
 public class OrderOption extends DecoratedOrder {
 
 	private String name;
