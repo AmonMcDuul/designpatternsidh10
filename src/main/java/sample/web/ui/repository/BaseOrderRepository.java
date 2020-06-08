@@ -4,6 +4,6 @@ import org.springframework.data.repository.CrudRepository;
 
 import sample.web.ui.domain.BaseOrder;
 
-public interface BaseOrderRepository<T extends BaseOrder>  extends CrudRepository<T, Long> {
+public interface BaseOrderRepository<T extends BaseOrder>  extends CrudRepository<BaseOrder, Long> {
 
 }

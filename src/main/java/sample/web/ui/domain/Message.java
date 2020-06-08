@@ -32,10 +32,10 @@ import lombok.*;
 @Getter
 @Setter
 @NoArgsConstructor
-public class Message {
+public class Message extends DateAudit {
 
 	@Id
-	@GeneratedValue(strategy = GenerationType.AUTO)
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 
 	@NotEmpty(message = "Text is required.")
@@ -43,7 +43,4 @@ public class Message {
 
 	@NotEmpty(message = "Summary is required.")
 	private String summary;
-
-	private Calendar created = Calendar.getInstance();
-
 }

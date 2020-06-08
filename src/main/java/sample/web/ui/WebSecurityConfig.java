@@ -3,49 +3,71 @@ package sample.web.ui;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.core.userdetails.User;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.crypto.factory.PasswordEncoderFactories;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 
 @Configuration
 @EnableWebSecurity
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
-    private static final String USER = "USER";
-    private static final String ADMIN = "ADMIN";
-    @Override
-    protected void configure(HttpSecurity http) throws Exception {
-        http
-        .authorizeRequests()
-            .antMatchers("/", "/home").permitAll()
-            //.antMatchers("/message", "/message").permitAll()
-            .antMatchers("/orders/create-catalog").hasRole(ADMIN)
-            .anyRequest().authenticated()
-            .and()
-       .formLogin()
-            .loginPage("/login")
-            .permitAll()
-            .and()
-       .logout()
-            .logoutSuccessUrl("/")
-            .permitAll()
-        .and()
-            .exceptionHandling()
-            .accessDeniedPage("/403");
-    }
+
+    private static String REALM="api";
 
     @Autowired
-    public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
-        auth
-            .inMemoryAuthentication()
-            .withUser("user").password(passwordEncoder().encode("password")).roles(USER)
-            .and()
-            .withUser("admin").password(passwordEncoder().encode("admin")).roles(USER, ADMIN);
+    public void configureGlobalSecurity(AuthenticationManagerBuilder auth) throws Exception {
+    }
+
+    @Override
+    protected void configure(HttpSecurity http) throws Exception {
+
+        http.csrf().disable()
+                .authorizeRequests()
+                .antMatchers("/**").hasRole("ADMIN")
+                .antMatchers("/**").hasRole("USER")
+                .and().httpBasic().realmName(REALM).authenticationEntryPoint(getBasicAuthEntryPoint())
+                .and().sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);//We don't need sessions to be created.
     }
 
     @Bean
-    public BCryptPasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder();
+    public CustomBasicAuthenticationEntryPoint getBasicAuthEntryPoint(){
+        return new CustomBasicAuthenticationEntryPoint();
+    }
+
+    @Bean
+    @Override
+    public UserDetailsService userDetailsService() {
+
+        PasswordEncoder encoder = PasswordEncoderFactories.createDelegatingPasswordEncoder();
+
+        final User.UserBuilder userBuilder = User.builder().passwordEncoder(encoder::encode);
+        UserDetails user = userBuilder
+                .username("user")
+                .password("password")
+                .roles("USER")
+                .build();
+
+        UserDetails admin = userBuilder
+                .username("admin")
+                .password("password")
+                .roles("USER","ADMIN")
+                .build();
+
+        return new InMemoryUserDetailsManager(user, admin);
+    }
+
+    /* To allow Pre-flight [OPTIONS] request from browser */
+    @Override
+    public void configure(WebSecurity web) throws Exception {
+        web.ignoring().antMatchers(HttpMethod.OPTIONS, "/**");
     }
 }

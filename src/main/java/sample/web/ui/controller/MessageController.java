@@ -16,6 +16,7 @@
 
 package sample.web.ui.controller;
 
+import com.itextpdf.text.DocumentException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -27,9 +28,11 @@ import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import sample.web.ui.crosscutting.MyExecutionTime;
 import sample.web.ui.domain.Message;
+import sample.web.ui.domain.MessageToPDFAdapter;
 import sample.web.ui.repository.MessageRepository;
 
 import javax.validation.Valid;
+import java.io.IOException;
 
 @Slf4j
 @Controller
@@ -65,12 +68,13 @@ public class MessageController  {
 		return FORM_TEMPLATE;
 	}
 
-	@PostMapping
+	@RequestMapping(value = "form", method = {RequestMethod.POST})
 	public ModelAndView create(@Valid Message message, BindingResult result,
-							   RedirectAttributes redirect) {
+							   RedirectAttributes redirect) throws IOException, DocumentException {
 		if (result.hasErrors()) {
 			return new ModelAndView(FORM_TEMPLATE, "formErrors", result.getAllErrors());
 		}
+		adapterDemonstration(message);
 		this.messageRepository.save(message);
 		redirect.addFlashAttribute("globalMessage", "view.success");
 		Iterable<Message> messages = this.messageRepository.findAll();
@@ -95,6 +99,11 @@ public class MessageController  {
 	@RequestMapping(value = "modify/{id}", method = {RequestMethod.GET, RequestMethod.POST})
 	public ModelAndView modifyForm(@PathVariable("id") Message message) {
 		return new ModelAndView(FORM_TEMPLATE, "message", message);
+	}
+
+	private void adapterDemonstration(Message message) throws IOException, DocumentException {
+		MessageToPDFAdapter adapter = new MessageToPDFAdapter(message);
+		adapter.generatePDF(message);
 	}
 
 }

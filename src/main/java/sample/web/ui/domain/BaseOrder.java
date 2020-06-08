@@ -2,6 +2,7 @@ package sample.web.ui.domain;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 
 import lombok.Getter;
@@ -15,7 +16,7 @@ import lombok.Setter;
 public abstract class BaseOrder {
 	
 	@Id
-	@GeneratedValue
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 	
 	public abstract int price();
