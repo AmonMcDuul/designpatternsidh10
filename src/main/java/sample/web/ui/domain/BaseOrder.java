@@ -16,7 +16,7 @@ import lombok.Setter;
 public abstract class BaseOrder {
 	
 	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@GeneratedValue(strategy = GenerationType.AUTO)
 	private Long id;
 	
 	public abstract int price();

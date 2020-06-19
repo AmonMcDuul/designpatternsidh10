@@ -5,8 +5,9 @@ import org.springframework.data.repository.CrudRepository;
 import org.springframework.data.rest.core.annotation.RepositoryRestResource;
 import sample.web.ui.domain.BaseOrder;
 import sample.web.ui.domain.Order;
+import sample.web.ui.domain.OrderOption;
 
 @RepositoryRestResource(collectionResourceRel = "baseorders", path = "baseorders")
-public interface BaseOrderRepository<T extends BaseOrder>  extends CrudRepository<BaseOrder, Long> {
+public interface BaseOrderRepository<T extends BaseOrder>  extends CrudRepository<OrderOption, Long> {
 
 }
