@@ -35,7 +35,7 @@ import lombok.*;
 public class Message extends DateAudit {
 
 	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@GeneratedValue(strategy = GenerationType.AUTO)
 	private Long id;
 
 	@NotEmpty(message = "Text is required.")

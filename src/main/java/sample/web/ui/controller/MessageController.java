@@ -26,6 +26,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import sample.web.ui.SingletonLogging;
 import sample.web.ui.crosscutting.MyExecutionTime;
 import sample.web.ui.domain.Message;
 import sample.web.ui.domain.MessageToPDFAdapter;
@@ -78,6 +79,7 @@ public class MessageController  {
 		this.messageRepository.save(message);
 		redirect.addFlashAttribute("globalMessage", "view.success");
 		Iterable<Message> messages = this.messageRepository.findAll();
+		SingletonLogging.log("The following message has been created\n" + message.getText() + "\n\n");
 		return new ModelAndView(LIST_TEMPLATE, "messages", messages);
 	}
 
