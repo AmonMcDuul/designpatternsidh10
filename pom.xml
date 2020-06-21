@@ -16,8 +16,10 @@
 
 	<properties>
 		<java.version>1.8</java.version>
-		<sonar.projectKey>mouali1_design-patterns-idh10</sonar.projectKey>
-		<sonar.organization>mouali1</sonar.organization>
+		<sonar.projectKey>AmonMcDuul_designpatternsidh10</sonar.projectKey>
+		<sonar.organization>amonmcduul</sonar.organization>
+		<sonar.host.url>https://sonarcloud.io</sonar.host.url>
+		<sonar.login>338dd2ea841d748dc0d969c8dc8c47af1604d67c</sonar.login>
 	</properties>
 
 	<dependencies>
