@@ -28,7 +28,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
-import sample.web.ui.SingletonLogging;
+import sample.web.ui.service.SingletonLogging;
 import sample.web.ui.crosscutting.MyExecutionTime;
 import sample.web.ui.domain.Message;
 import sample.web.ui.domain.MessageToPDFAdapter;

@@ -1,4 +1,4 @@
-package sample.web.ui;
+package sample.web.ui.service;
 
 import java.io.File;
 import java.io.FileWriter;
