@@ -21,6 +21,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
+import org.springframework.transaction.annotation.Isolation;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
@@ -63,7 +65,7 @@ public class MessageController  {
 		return new ModelAndView("messages/view", "message", message);
 	}
 
-	@Transactional
+	@Transactional(propagation= Propagation.REQUIRES_NEW, isolation = Isolation.SERIALIZABLE)
 	@GetMapping("form")
 	public String createForm(@ModelAttribute Message message) {
 		return FORM_TEMPLATE;
