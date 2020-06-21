@@ -8,18 +8,15 @@ import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.servlet.ModelAndView;
 import sample.web.ui.crosscutting.MyExecutionTime;
 import sample.web.ui.domain.BaseOrder;
-import sample.web.ui.domain.Message;
 import sample.web.ui.domain.Product;
 import sample.web.ui.domain.ProductCatalog;
-import sample.web.ui.repository.MessageRepository;
+import sample.web.ui.facade.OrderServiceFacade;
 import sample.web.ui.service.IOrderService;
 import sample.web.ui.service.IProductCatalogService;
 import sample.web.ui.service.IProductService;
 
-import javax.validation.Valid;
 import java.util.Arrays;
 import java.util.List;
 
@@ -33,14 +30,16 @@ public class OrderController {
 	private final IOrderService orderService;
 	private final IProductService productService;
 	private final IProductCatalogService productCatalogService;
+	public OrderServiceFacade facade;
+	public boolean orderFulfilled = false;
 
 	@Autowired
-	public OrderController(IOrderService orderService, IProductService productService, IProductCatalogService productCatalogService, MessageRepository messageRepository) {
+	public OrderController(IOrderService orderService, IProductService productService,
+			IProductCatalogService productCatalogService) {
 		this.orderService = orderService;
 		this.productService = productService;
 		this.productCatalogService = productCatalogService;
 	}
-
 
 	@MyExecutionTime
 	@Transactional
@@ -48,7 +47,6 @@ public class OrderController {
 	public ResponseEntity createAndDecorateOrder() {
 		return new ResponseEntity<>(orderService.createOrder(), CREATED);
 	}
-
 
 	@MyExecutionTime
 	@GetMapping
@@ -61,15 +59,20 @@ public class OrderController {
 	@GetMapping(path = "/create-catalog")
 	@PreAuthorize("hasRole('ROLE_ADMIN')")
 	public ResponseEntity<ProductCatalog> createProductCatalog() {
-//		create catalog
+		// create catalog
 		ProductCatalog catalog = productCatalogService.createProductCatalog();
-//    	create products
+		// create products
 		Product schroefje = productService.createProduct("schroefje", 2);
 		Product moertje = productService.createProduct("moertje", 1);
-//		add products to catalog
+		// add products to catalog
 		productCatalogService.addProductsToCatalog(Arrays.asList(schroefje, moertje), 5, catalog);
-//		return catalog
+		// return catalog
 		return new ResponseEntity<>(catalog, OK);
+	}
+
+	public void orderProduct(int productId) {
+		orderFulfilled = facade.placeOrder(productId);
+		System.out.println("OrderFulfillmentController: Order fulfillment completed. ");
 	}
 
 }
