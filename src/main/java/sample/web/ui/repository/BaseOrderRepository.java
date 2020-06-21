@@ -8,6 +8,5 @@ import sample.web.ui.domain.Order;
 import sample.web.ui.domain.OrderOption;
 
 @RepositoryRestResource(collectionResourceRel = "baseorders", path = "baseorders")
-public interface BaseOrderRepository<T extends BaseOrder>  extends CrudRepository<OrderOption, Long> {
-
+public interface BaseOrderRepository<T extends BaseOrder>  extends CrudRepository<Order, Long> {
 }
